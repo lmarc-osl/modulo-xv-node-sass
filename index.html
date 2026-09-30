@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Módulo XV — Aula 01: Conheça o Node.js. Uma introdução ao Node.js e ao npm.">
+
+    <title>Módulo XV — Aula 01 | Conheça o Node.js</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+        :root {
+            --bg: #07090d;
+            --bg-soft: #0c1017;
+            --panel: rgba(17, 22, 31, .78);
+            --panel-solid: #11161f;
+            --border: rgba(255,255,255,.09);
+            --text: #f4f7fb;
+            --muted: #a5adba;
+            --muted-2: #707988;
+            --accent: #58e6a5;
+            --accent-2: #37b8ff;
+            --shadow: 0 24px 70px rgba(0,0,0,.35);
+            --radius: 22px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 75% 0%, rgba(55,184,255,.09), transparent 30%),
+                radial-gradient(circle at 20% 30%, rgba(88,230,165,.06), transparent 26%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Inter", system-ui, sans-serif;
+            line-height: 1.7;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+            z-index: 20;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .site {
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            min-height: 100vh;
+        }
+
+        /* ---------- SIDEBAR ---------- */
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 30px 22px;
+            border-right: 1px solid var(--border);
+            background: rgba(7,9,13,.72);
+            backdrop-filter: blur(22px);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 42px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(88,230,165,.35);
+            border-radius: 11px;
+            background: linear-gradient(135deg, rgba(88,230,165,.16), rgba(55,184,255,.08));
+            color: var(--accent);
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted-2);
+            font-size: .67rem;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+        }
+
+        .brand strong {
+            display: block;
+            margin-top: 1px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .98rem;
+        }
+
+        .nav-label {
+            margin: 0 10px 12px;
+            color: var(--muted-2);
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+
+
+        .next-lesson-nav {
+            margin-top: 34px;
+            padding-top: 26px;
+            border-top: 1px solid var(--border);
+        }
+
+        .next-nav a {
+            color: #626976;
+            opacity: .65;
+            font-size: .82rem;
+        }
+
+        /* Remove completamente os efeitos da navegação principal */
+
+        .next-nav a::before {
+            display: none;
+        }
+
+
+
+
+        .nav {
+            display: grid;
+            gap: 5px;
+        }
+
+        .nav a {
+            position: relative;
+            padding: 11px 13px;
+            border-radius: 11px;
+            color: var(--muted);
+            font-size: .87rem;
+            transition: .2s ease;
+        }
+
+        .nav a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            border-radius: 99px;
+            background: var(--accent);
+            opacity: 0;
+            transform: scaleY(.5);
+            transition: .2s ease;
+        }
+
+        .nav:not(.next-nav) a:hover,
+        .nav:not(.next-nav) a.active {
+            background: rgba(255,255,255,.055);
+            color: var(--text);
+        }
+
+        .nav:not(.next-nav) a:hover::before,
+        .nav:not(.next-nav) a.active::before {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            left: 22px;
+            right: 22px;
+            bottom: 26px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted-2);
+            font-size: .72rem;
+        }
+
+        /* ---------- MAIN ---------- */
+
+        main {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 48px 90px;
+        }
+
+        /* ---------- HERO ---------- */
+
+        .hero {
+            position: relative;
+            min-height: 580px;
+            margin: 0 -48px 80px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            isolation: isolate;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(7,9,13,.98) 0%, rgba(7,9,13,.72) 34%, rgba(7,9,13,.18) 78%),
+                linear-gradient(0deg, rgba(7,9,13,1) 0%, rgba(7,9,13,.04) 55%);
+            z-index: 1;
+        }
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: right 40%;
+            filter: saturate(.85) contrast(1.06);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 760px;
+            padding: 80px 48px 76px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 7px 11px;
+            border: 1px solid rgba(88,230,165,.28);
+            border-radius: 999px;
+            background: rgba(7,9,13,.5);
+            color: var(--accent);
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 14px var(--accent);
+        }
+
+        h1 {
+            max-width: 720px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(3rem, 7vw, 5.8rem);
+            line-height: .98;
+            letter-spacing: -.055em;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin-top: 22px;
+            color: #c6ccd6;
+            font-size: 1.08rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 28px;
+        }
+
+        .meta {
+            padding: 8px 12px;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 9px;
+            background: rgba(0,0,0,.28);
+            color: #d9dee6;
+            font-size: .76rem;
+            backdrop-filter: blur(8px);
+        }
+
+        /* ---------- CONTENT ---------- */
+
+        .content {
+            max-width: 850px;
+        }
+
+        section {
+            scroll-margin-top: 40px;
+            margin-bottom: 84px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .section-number {
+            color: var(--accent);
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+        }
+
+        h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.9rem, 4vw, 2.6rem);
+            line-height: 1.15;
+            letter-spacing: -.035em;
+        }
+
+        h3 {
+            margin: 34px 0 12px;
+            font-size: 1.1rem;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--muted);
+        }
+
+        /* ---------- IMAGE FEATURE ---------- */
+
+        .image-feature {
+            position: relative;
+            min-height: 290px;
+            margin: 30px 0 34px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .image-feature img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-feature::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(7,9,13,.88), rgba(7,9,13,.16));
+        }
+
+        .image-caption {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            min-height: 290px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+        }
+
+        .image-caption span {
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        .image-caption strong {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.65rem;
+            line-height: 1.15;
+        }
+
+        .image-caption p {
+            margin: 8px 0 0;
+            color: #c0c7d1;
+            font-size: .9rem;
+        }
+
+        /* ---------- CODE ---------- */
+
+        .code-block {
+            margin: 22px 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #05070a;
+            box-shadow: 0 16px 45px rgba(0,0,0,.25);
+        }
+
+        .code-top {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 11px 14px;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            background: #0b0e13;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #424955;
+        }
+
+        .code-top span:last-child {
+            margin-left: 7px;
+            color: #687180;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .68rem;
+            letter-spacing: .04em;
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            color: #dce3ed;
+            font: 500 .9rem/1.7 "Cascadia Code", "Fira Code", Consolas, monospace;
+        }
+
+        .command { color: var(--accent); }
+        .value { color: #8ed8ff; }
+
+        /* ---------- LIST / CARDS ---------- */
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .feature-card {
+            padding: 23px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+        }
+
+        .feature-icon {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 14px;
+            border-radius: 10px;
+            background: rgba(88,230,165,.09);
+            color: var(--accent);
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+        }
+
+        .feature-card strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            margin: 0;
+            font-size: .86rem;
+        }
+
+        /* ---------- COMPARISON ---------- */
+
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 28px;
+        }
+
+        .compare-card {
+            position: relative;
+            overflow: hidden;
+            padding: 27px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--panel);
+            backdrop-filter: blur(16px);
+        }
+
+        .compare-card::after {
+            content: "";
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            right: -60px;
+            bottom: -80px;
+            border-radius: 50%;
+            background: rgba(55,184,255,.09);
+            filter: blur(20px);
+        }
+
+        .compare-card:nth-child(2)::after {
+            background: rgba(88,230,165,.09);
+        }
+
+        .compare-label {
+            color: var(--muted-2);
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .compare-card h3 {
+            margin: 7px 0 10px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.55rem;
+        }
+
+        .compare-card p { margin: 0; }
+
+        /* ---------- DIAGRAM ---------- */
+
+        .diagram {
+            position: relative;
+            margin-top: 30px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(88,230,165,.08), transparent 40%),
+                #080b10;
+            overflow: hidden;
+        }
+
+        .diagram pre {
+            padding: 0;
+        }
+
+        .diagram .node { color: var(--accent); }
+        .diagram .pkg { color: #8ed8ff; }
+
+        /* ---------- IMAGE STRIP ---------- */
+
+        .image-strip {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 14px;
+            margin: 35px 0;
+        }
+
+        .strip-card {
+            position: relative;
+            min-height: 260px;
+            overflow: hidden;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+        }
+
+        .strip-card img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s ease;
+        }
+
+        .strip-card:hover img {
+            transform: scale(1.045);
+        }
+
+        .strip-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(5,7,10,.86), transparent 65%);
+        }
+
+        .strip-card div {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 18px;
+            z-index: 1;
+        }
+
+        .strip-card strong {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .strip-card small {
+            display: block;
+            margin-top: 3px;
+            color: #c0c7d1;
+        }
+
+        /* ---------- FINAL CTA ---------- */
+
+        .next-lesson {
+            position: relative;
+            min-height: 280px;
+            display: flex;
+            align-items: flex-end;
+            margin-top: 30px;
+            overflow: hidden;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .next-lesson img {
+            position: absolute;
+            object-position: bottom 20%;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(.82);
+        }
+
+        .next-lesson::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(5,7,10,.93), rgba(5,7,10,.25));
+        }
+
+        .next-content {
+            position: relative;
+            z-index: 1;
+            padding: 57px;
+        }
+
+        .next-content small {
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .next-content h2 {
+            max-width: 520px;
+            margin: 8px 0 0;
+        }
+
+        /* ---------- FOOTER NAV ---------- */
+
+        .lesson-navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 70px;
+            padding-top: 26px;
+            border-top: 1px solid var(--border);
+        }
+
+        .lesson-navigation a {
+            padding: 12px 17px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: rgba(255,255,255,.025);
+            color: var(--muted);
+            font-size: .83rem;
+            transition: .2s ease;
+        }
+
+        .lesson-navigation a:hover {
+            color: var(--text);
+            background: rgba(255,255,255,.06);
+        }
+
+        .site-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+
+            margin-top: 80px;
+            padding: 28px 20px;
+
+            border-top: 1px solid var(--border);
+
+            color: var(--muted-2);
+            font-family: "Inter", sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.03em;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-brand img {
+            display: block;
+            width: 70px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .footer-copyright {
+            white-space: nowrap;
+        }
+
+
+        /* ---------- RESPONSIVE ---------- */
+
+        @media (max-width: 900px) {
+            .site { display: block; }
+
+            .sidebar {
+                position: relative;
+                height: auto;
+                padding: 18px 20px;
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand { margin-bottom: 18px; }
+
+            .sidebar-footer { display: none; }
+
+            .nav {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            main { padding: 0 24px 70px; }
+
+            .hero {
+                min-height: 540px;
+                margin: 0 -24px 65px;
+            }
+
+            .hero-content { padding: 60px 24px; }
+        }
+
+        @media (max-width: 620px) {
+            .feature-grid,
+            .comparison,
+            .image-strip {
+                grid-template-columns: 1fr;
+            }
+
+            h1 { font-size: 3rem; }
+
+            .hero {
+                min-height: 560px;
+            }
+
+            .hero-image {
+                object-position: 60% center;
+            }
+
+            .image-feature {
+                min-height: 340px;
+            }
+
+            .image-caption {
+                min-height: 340px;
+            }
+
+            .lesson-navigation {
+                flex-direction: column;
+            }
+
+            .lesson-navigation a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="site">
+
+    <aside class="sidebar">
+        <a class="brand" href="#">
+            <span class="brand-mark">JS</span>
+            <span>
+                <small>Módulo XV</small>
+                <strong>Conheça o Node.js</strong>
+            </span>
+        </a>
+
+        <div class="nav-label">Nesta aula</div>
+
+        <nav class="nav" aria-label="Navegação da aula">
+            <a class="active" href="#node">01 · O que é Node.js?</a>
+            <a href="#npm">02 · Node.js e npm</a>
+            <a href="#diferenca">03 · Node.js ≠ npm</a>
+        </nav>
+
+    <!-- PRÓXIMA AULA -->
+    <div class="next-lesson-nav">
+
+        <div class="nav-label">
+            Próxima aula
+        </div>
+
+        <nav class="nav next-nav" aria-label="Próxima aula">
+
+            <a>04 · Conhecendo o Sass</a>
+
+            <a>05 · Instalando o Sass</a>
+
+            <a>06 · Instalação local x global</a>
+
+        </nav>
+
+    </div>
+
+
+    <div class="sidebar-footer">
+        Aula 01 · Fundamentos de Node.js
+    </div>
+
+
+    </aside>
+
+    <main>
+
+        <header class="hero">
+            <img class="hero-image" src="images/matrix.jpg" alt="Código sendo desenvolvido em um editor de programação">
+
+            <div class="hero-content">
+                <div class="eyebrow">Aula 01 · Fundamentos</div>
+
+                <h1>Conheça o<br>Node.js</h1>
+
+                <p>
+                    Uma introdução ao ambiente de execução JavaScript
+                    e ao gerenciador de pacotes npm.
+                </p>
+
+                <div class="hero-meta">
+                    <span class="meta">JavaScript</span>
+                    <span class="meta">Node.js</span>
+                    <span class="meta">npm</span>
+                    <span class="meta">Terminal</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <section id="node">
+                <div class="section-heading">
+                    <span class="section-number">01</span>
+                    <h2>O que é o Node.js?</h2>
+                </div>
+
+                <p>
+                    O Node.js é um ambiente que permite executar
+                    código JavaScript fora do navegador.
+                </p>
+
+                <p>
+                    Tradicionalmente, o JavaScript era associado
+                    principalmente aos navegadores.
+                </p>
+
+                <div class="image-feature">
+                    <img src="images/stars.jpg" alt="Pessoa observando o céu estrelado">
+
+                    <div class="image-caption">
+                        <span>Uma nova perspectiva</span>
+                        <strong>JavaScript além do navegador.</strong>
+                        <p>
+                            O Node.js amplia o lugar onde podemos
+                            utilizar JavaScript.
+                        </p>
+                    </div>
+                </div>
+
+                <p>
+                    Por exemplo, quando escrevemos:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>JavaScript</span>
+                    </div>
+
+                    <pre><code>console.log(<span class="value">"Olá, mundo!"</span>);</code></pre>
+                </div>
+
+                <p>
+                    o navegador pode interpretar e executar esse código.
+                    Com o Node.js, podemos executar JavaScript diretamente
+                    no computador, utilizando o terminal.
+                </p>
+
+                <div class="feature-grid">
+
+                    <article class="feature-card">
+                        <div class="feature-icon">01</div>
+                        <strong>Ferramentas</strong>
+                        <p>Executar ferramentas de desenvolvimento.</p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">02</div>
+                        <strong>Automação</strong>
+                        <p>Automatizar tarefas durante o desenvolvimento.</p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">03</div>
+                        <strong>Dependências</strong>
+                        <p>Gerenciar e instalar pacotes e dependências.</p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">04</div>
+                        <strong>Servidores</strong>
+                        <p>Executar aplicações e servidores JavaScript.</p>
+                    </article>
+
+                </div>
+
+                <p style="margin-top:28px;">
+                    Uma característica importante do Node.js é que ele
+                    possui um gerenciador de pacotes, o npm
+                    (Node Package Manager).
+                </p>
+            </section>
+
+            <section id="npm">
+                <div class="section-heading">
+                    <span class="section-number">02</span>
+                    <h2>Node.js e o npm</h2>
+                </div>
+
+                <p>
+                    Ao instalar o Node.js, normalmente também temos
+                    acesso ao npm.
+                </p>
+
+                <div class="image-strip">
+                    <div class="strip-card">
+                        <img src="images/sunset.jpg" alt="Nascer ou pôr do sol sobre uma cidade">
+                        <div>
+                            <strong>O ambiente</strong>
+                            <small>Node.js executa JavaScript fora do navegador.</small>
+                        </div>
+                    </div>
+
+                    <div class="strip-card">
+                        <img src="images/volcano.jpg" alt="Vulcão sob um céu colorido">
+                        <div>
+                            <strong>O ecossistema</strong>
+                            <small>npm ajuda a administrar pacotes JavaScript.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Verificando o Node.js</h3>
+
+                <p>
+                    Podemos verificar se o Node está instalado através do terminal:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Terminal</span>
+                    </div>
+
+                    <pre><code><span class="command">node --version</span></code></pre>
+                </div>
+
+                <p>Ou:</p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Terminal</span>
+                    </div>
+
+                    <pre><code><span class="command">node -v</span></code></pre>
+                </div>
+
+                <p>
+                    O terminal deverá retornar a versão instalada,
+                    por exemplo:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Output</span>
+                    </div>
+
+                    <pre><code><span class="value">v22.x.x</span></code></pre>
+                </div>
+
+                <h3>Verificando o npm</h3>
+
+                <p>
+                    Também podemos verificar a versão do npm:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Terminal</span>
+                    </div>
+
+                    <pre><code><span class="command">npm --version</span></code></pre>
+                </div>
+
+                <p>Ou:</p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Terminal</span>
+                    </div>
+
+                    <pre><code><span class="command">npm -v</span></code></pre>
+                </div>
+
+                <p>
+                    O terminal deverá retornar algo semelhante a:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Output</span>
+                    </div>
+
+                    <pre><code><span class="value">10.x.x</span></code></pre>
+                </div>
+            </section>
+
+            <section id="diferenca">
+                <div class="section-heading">
+                    <span class="section-number">03</span>
+                    <h2>Node.js ≠ npm</h2>
+                </div>
+
+                <p>
+                    É importante não confundir os dois:
+                </p>
+
+                <div class="comparison">
+
+                    <article class="compare-card">
+                        <span class="compare-label">Ambiente de execução</span>
+                        <h3>Node.js</h3>
+                        <p>
+                            Ambiente que permite executar JavaScript
+                            fora do navegador.
+                        </p>
+                    </article>
+
+                    <article class="compare-card">
+                        <span class="compare-label">Gerenciador de pacotes</span>
+                        <h3>npm</h3>
+                        <p>
+                            Gerenciador utilizado para instalar
+                            e administrar pacotes JavaScript.
+                        </p>
+                    </article>
+
+                </div>
+
+                <h3>Uma forma simples de visualizar</h3>
+
+                <div class="diagram">
+                    <pre><code><span class="node">Node.js</span>
+   │
+   └── npm
+        │
+        ├── <span class="pkg">Sass</span>
+        ├── <span class="pkg">outras ferramentas</span>
+        └── <span class="pkg">outros pacotes</span></code></pre>
+                </div>
+
+                <div class="next-lesson">
+                    <img src="images/coding.jpg" alt="Vulcão ao entardecer">
+
+                    <div class="next-content">
+                        <small>Próximo passo</small>
+                        <h2>
+                            Agora que você conhece o Node.js,
+                            continue explorando o ecossistema JavaScript a seguir!
+                        </h2>
+                    </div>
+                </div>
+            </section>
+
+            <nav class="lesson-navigation" aria-label="Navegação entre aulas">
+                <a href="index2.html">Próxima aula →</a>
+            </nav>
+
+        </div>
+
+        <footer class="site-footer">
+
+            <div class="footer-brand">
+                <img src="images/logo.png" alt="Marcos Gomes">
+            </div>
+
+            <div class="footer-copyright">
+                © 2026 Marcos Gomes | All Rights Reserved
+            </div>
+
+        </footer>
+
+    </main>
+
+
+
+</div>
+
+<script>
+    // Destaque simples do item de navegação conforme a seção visível.
+    const sections = document.querySelectorAll("section[id]");
+    const links = document.querySelectorAll(".nav a");
+
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+
+                links.forEach(link => link.classList.remove("active"));
+
+                const active = document.querySelector(
+                    `.nav a[href="#${entry.target.id}"]`
+                );
+
+                if (active) active.classList.add("active");
+            });
+        },
+        { rootMargin: "-20% 0px -65% 0px" }
+    );
+
+    sections.forEach(section => observer.observe(section));
+</script>
+
+</body>
+</html>

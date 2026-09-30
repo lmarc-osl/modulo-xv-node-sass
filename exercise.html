@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Conhe&ccedil;a o Node &mdash; Exerc&iacute;cios
+  </title>
+  <link href="style.css" rel="stylesheet"/>
+ </head>
+
+ <body>
+
+  <div class="site">
+   <aside class="sidebar">
+    <a class="brand" href="#">
+     <span class="brand-mark">
+      JS
+     </span>
+     <span>
+      <small>
+       M&oacute;dulo XV
+      </small>
+      <strong>
+       Exerc&iacute;cios
+      </strong>
+     </span>
+    </a>
+
+    <div class="nav-label">
+     Questões
+    </div>
+
+    <nav aria-label="Navega&ccedil;&atilde;o dos exerc&iacute;cios" class="nav">
+
+      <a href="#q1">
+        01 • O que é o Node.js?
+      </a>
+      <a href="#q2">
+        02 • Qual é a principal função do npm?
+      </a>
+      <a href="#q3">
+        03 • Digite o comando usado para verificar a versão do Node.js.
+      </a>
+      <a href="#q4">
+        04 •  Qual afirmação diferencia corretamente Node.js e npm?
+      </a>
+      <a href="#q5">
+        05 •  O que é o Sass?
+      </a>
+      <a href="#q6">
+        06 •  Digite o comando para instalar o Sass globalmente.
+      </a>
+      <a href="#q7">
+        07 •  Por que o Sass precisa ser processado antes de ser usado pelo navegador?
+      </a>
+      <a href="#q8">
+        08 •  Digite o comando para verificar a versão do Sass.
+      </a>
+    </nav>
+
+    <div class="sidebar-spacer" aria-hidden="true"></div>
+    <a class="back-home" href="#inicio">Voltar ao início</a>
+    <br>
+    <div class="sidebar-footer">
+     Aula 01 &middot; Fundamentos de Node.js
+    </div>
+
+   </aside>
+   <header class="visual-hero" id="inicio">
+    <div class="hero-image-wrap">
+     <img alt="Editor de c&oacute;digo com programa&ccedil;&atilde;o em destaque" src="images/crew.jpg"/>
+    </div>
+    <div class="hero-overlay">
+    </div>
+    <div class="container hero-content">
+     <div class="hero-copy">
+      <span class="tag">
+       Aula 01 &bull; Fundamentos
+      </span>
+      <h1>
+       Desafio
+       <br/>
+       <span>
+        Node.js &amp; Sass
+       </span>
+      </h1>
+      <p class="subtitle">
+       Coloque em pr&aacute;tica os conceitos de Node.js, npm, pacotes e Sass
+        atrav&eacute;s de quest&otilde;es de m&uacute;ltipla escolha e exerc&iacute;cios de digita&ccedil;&atilde;o.
+      </p>
+      <div class="hero-meta">
+       <span>
+        JavaScript
+       </span>
+       <span>
+        Node.js
+       </span>
+       <span>
+        npm
+       </span>
+       <span>
+        Sass
+       </span>
+      </div>
+     </div>
+     <div class="hero-side-card">
+      <span class="mini-label">
+       Pr&aacute;tica guiada
+      </span>
+      <strong>
+       8 exerc&iacute;cios
+      </strong>
+      <small>
+       Teste seus conhecimentos e acompanhe seu progresso.
+      </small>
+     </div>
+    </div>
+   </header>
+
+   <div class="progress-wrap">
+    <div class="container">
+     <div class="progress">
+      <div aria-valuemax="8" aria-valuemin="0" aria-valuenow="0" class="progress-bar" id="progressBar" role="progressbar">
+      </div>
+     </div>
+     <div class="progress-text" id="progressText">
+      0 de 8 respondidas
+     </div>
+    </div>
+   </div>
+
+    <div class="visual-intro-image">
+     <img alt="M&atilde;o diante de uma interface de programa&ccedil;&atilde;o" src="images/coding.jpg"/>
+    </div>
+   </section>
+
+   <main class="container">
+    <form data-section="questoes" id="quiz">
+     <div class="section-anchor" id="questoes">
+     </div>
+
+     <section class="card" id="q1">
+       <div class="number">
+       Quest&atilde;o 1 &bull; M&uacute;ltipla escolha
+      </div>
+
+      <h2>
+       O que &eacute; o Node.js?
+      </h2>
+      <label class="option">
+       <input name="q1" type="radio" value="a"/>
+       Uma linguagem de programa&ccedil;&atilde;o diferente do JavaScript.
+      </label>
+
+      <label class="option">
+       <input name="q1" type="radio" value="b"/>
+       Um ambiente que permite executar JavaScript fora do navegador.
+      </label>
+      <label class="option">
+       <input name="q1" type="radio" value="c"/>
+       Um editor de c&oacute;digo para desenvolvimento web.
+      </label>
+
+      <label class="option">
+       <input name="q1" type="radio" value="d"/>
+       Um navegador desenvolvido para executar CSS.
+      </label>
+
+      <div class="feedback" id="f1">
+      </div>
+     </section>
+
+     <section class="card" id="q2">
+       <div class="number">
+       Quest&atilde;o 2 &bull; M&uacute;ltipla escolha
+      </div>
+
+      <h2>
+       Qual &eacute; a principal fun&ccedil;&atilde;o do npm?
+      </h2>
+      <label class="option">
+       <input name="q2" type="radio" value="a"/>
+       Editar imagens.
+      </label>
+
+      <label class="option">
+       <input name="q2" type="radio" value="b"/>
+       Gerenciar e instalar pacotes.
+      </label>
+
+      <label class="option">
+       <input name="q2" type="radio" value="c"/>
+       Substituir o HTML.
+      </label>
+
+      <label class="option">
+       <input name="q2" type="radio" value="d"/>
+       Compilar o navegador.
+      </label>
+      
+      <div class="feedback" id="f2">
+      </div>
+     </section>
+
+     <section class="card typing-card" id="q3">
+      <div class="typing-card-grid">
+       <div class="typing-card-media">
+        <img alt="Pessoa em uma composi&ccedil;&atilde;o visual contempor&acirc;nea" class="typing-card-image" src="images/arch.jpg"/>
+       </div>
+       <div class="typing-card-content">
+        <div class="number">
+         Quest&atilde;o 3 &bull; Digita&ccedil;&atilde;o
+        </div>
+        <h2>
+         Digite o comando usado para verificar a vers&atilde;o do Node.js.
+        </h2>
+        <input autocomplete="off" id="answer-q3" placeholder="Ex.: node ..." type="text"/>
+        <p class="hint">
+         Dica: use a forma curta apresentada na aula.
+        </p>
+        <div class="feedback" id="f3">
+        </div>
+       </div>
+      </div>
+     </section>
+     <section class="card" id="q4">
+       <div class="number">
+       Quest&atilde;o 4 &bull; M&uacute;ltipla escolha
+      </div>
+      <h2>
+       Qual afirma&ccedil;&atilde;o diferencia corretamente Node.js e npm?
+      </h2>
+      <label class="option">
+       <input name="q4" type="radio" value="a"/>
+       Node.js &eacute; o gerenciador de pacotes e npm &eacute; o ambiente de execu&ccedil;&atilde;o.
+      </label>
+      <label class="option">
+       <input name="q4" type="radio" value="b"/>
+       Node.js &eacute; um ambiente de execu&ccedil;&atilde;o e npm &eacute; um gerenciador de pacotes.
+      </label>
+      <label class="option">
+       <input name="q4" type="radio" value="c"/>
+       Ambos s&atilde;o linguagens de programa&ccedil;&atilde;o.
+      </label>
+      <label class="option">
+       <input name="q4" type="radio" value="d"/>
+       Ambos s&atilde;o navegadores.
+      </label>
+      <div class="feedback" id="f4">
+      </div>
+     </section>
+     <section class="card" id="q5">
+       <div class="number">
+       Quest&atilde;o 5 &bull; M&uacute;ltipla escolha
+      </div>
+      <h2>
+       O que &eacute; o Sass?
+      </h2>
+      <label class="option">
+       <input name="q5" type="radio" value="a"/>
+       Uma extens&atilde;o que adiciona recursos ao desenvolvimento de CSS.
+      </label>
+      <label class="option">
+       <input name="q5" type="radio" value="b"/>
+       Um substituto do JavaScript no navegador.
+      </label>
+      <label class="option">
+       <input name="q5" type="radio" value="c"/>
+       Um sistema operacional.
+      </label>
+      <label class="option">
+       <input name="q5" type="radio" value="d"/>
+       Um banco de dados.
+      </label>
+      <div class="feedback" id="f5">
+      </div>
+     </section>
+     <section class="card typing-card" id="q6">
+      <div class="typing-card-grid">
+       <div class="typing-card-media">
+        <img alt="Pessoa em uma composi&ccedil;&atilde;o criativa" class="typing-card-image" src="images/cover.jpg"/>
+       </div>
+       <div class="typing-card-content">
+        <div class="number">
+         Quest&atilde;o 6 &bull; Digita&ccedil;&atilde;o
+        </div>
+        <h2>
+         Digite o comando para instalar o Sass globalmente.
+        </h2>
+        <input autocomplete="off" id="answer-q6" placeholder="npm ..." type="text"/>
+        <div class="feedback" id="f6">
+        </div>
+       </div>
+      </div>
+     </section>
+     <section class="card" id="q7">
+       <div class="number">
+       Quest&atilde;o 7 &bull; M&uacute;ltipla escolha
+      </div>
+      <h2>
+       Por que o Sass precisa ser processado antes de ser usado pelo navegador?
+      </h2>
+      <label class="option">
+       <input name="q7" type="radio" value="a"/>
+       Porque o navegador trabalha diretamente com Sass e n&atilde;o aceita HTML.
+      </label>
+      <label class="option">
+       <input name="q7" type="radio" value="b"/>
+       Porque o Sass &eacute; convertido/processado para CSS, que o navegador interpreta.
+      </label>
+      <label class="option">
+       <input name="q7" type="radio" value="c"/>
+       Porque Sass s&oacute; funciona em imagens.
+      </label>
+      <label class="option">
+       <input name="q7" type="radio" value="d"/>
+       Porque Node.js n&atilde;o consegue executar JavaScript.
+      </label>
+      <div class="feedback" id="f7">
+      </div>
+     </section>
+     <div class="image-break image-break-wide">
+      <img alt="Pessoa em um ambiente de trabalho criativo" src="images/arch2.jpg"/>
+      <div class="image-break-overlay">
+      </div>
+      <div class="image-break-content">
+       <span>
+        Pr&aacute;tica
+       </span>
+       <strong>
+        Agora conecte os conceitos.
+       </strong>
+       <small>
+        Node.js &rarr; npm &rarr; ferramentas &rarr; Sass
+       </small>
+      </div>
+     </div>
+     <section class="card" id="q8">
+       <div class="number">
+       Quest&atilde;o 8 &bull; Digita&ccedil;&atilde;o
+      </div>
+      <h2>
+       Digite o comando para verificar a vers&atilde;o do Sass.
+      </h2>
+      <input autocomplete="off" id="answer-q8" placeholder="sass ..." type="text"/>
+      <div class="feedback" id="f8">
+      </div>
+     </section>
+
+     <!--Melhoras design dos botões-->
+     <button type="submit">
+      Corrigir exerc&iacute;cios
+     </button>
+     <button class="secondary" id="resetBtn" type="button">
+      Refazer
+     </button>
+     <div class="final-visual">
+      <div class="final-visual-image">
+       <img alt="Profissional em um cen&aacute;rio de trabalho" src="images/matrix.jpg"/>
+      </div>
+      <div class="final-visual-copy">
+       <span class="eyebrow">
+        &Uacute;ltima etapa
+       </span>
+       <h2>
+        Terminou os exerc&iacute;cios?
+       </h2>
+       <p>
+        Envie suas respostas, confira sua pontua&ccedil;&atilde;o e use o resultado para
+      decidir quais conceitos precisam de uma nova revis&atilde;o.
+       </p>
+      </div>
+     </div>
+
+     <div class="section-anchor" id="resultado">
+     </div>
+
+     <div class="result" id="result">
+
+      <div>
+       Resultado
+      </div>
+
+      <div class="score" id="score">
+       0/8
+      </div>
+      <p id="message">
+      </p>
+     </div>
+
+    </form>
+   </main>
+
+            <nav class="lesson-navigation" aria-label="Navegação entre aulas">
+                <a href="index.html">Unidade I Node</a>
+                <a href="index2.html">Unidade II SASS</a>
+                <a href="index3.html">Unidade III Package.json</a>
+            </nav>
+
+        <footer class="site-footer">
+
+            <div class="footer-brand">
+                <img src="images/logo.png" alt="Marcos Gomes">
+            </div>
+
+            <div class="footer-copyright">
+                © 2026 Marcos Gomes | All Rights Reserved
+            </div>
+
+        </footer>
+  </div>
+  <script>
+    const answers = {
+      q1: "b",
+      q2: "b",
+      q3: "node -v",
+      q4: "b",
+      q5: "a",
+      q6: "npm install -g sass",
+      q7: "b",
+      q8: "sass --version"
+    };
+
+    const multipleChoiceQuestions = new Set(["q1", "q2", "q4", "q5", "q7"]);
+    const quiz = document.getElementById("quiz");
+    const result = document.getElementById("result");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+
+    function normalize(value) {
+      return String(value)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+    }
+
+    function getAnswer(key) {
+      if (multipleChoiceQuestions.has(key)) {
+        return document.querySelector(`input[name="${key}"]:checked`)?.value || "";
+      }
+
+      return document.getElementById(`answer-${key}`)?.value || "";
+    }
+
+    function getAnswered() {
+      let count = 0;
+
+      for (let i = 1; i <= 8; i++) {
+        const key = `q${i}`;
+        if (getAnswer(key).trim()) count++;
+      }
+
+      return count;
+    }
+
+    function updateProgress() {
+      const answered = getAnswered();
+      progressText.textContent = `${answered} de 8 respondidas`;
+      progressBar.style.width = `${(answered / 8) * 100}%`;
+      progressBar.setAttribute("aria-valuenow", answered);
+    }
+
+    quiz.addEventListener("input", updateProgress);
+    quiz.addEventListener("change", updateProgress);
+
+    quiz.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      let score = 0;
+
+      for (let i = 1; i <= 8; i++) {
+        const key = `q${i}`;
+        const userAnswer = getAnswer(key);
+        const correct = normalize(userAnswer) === normalize(answers[key]);
+        const feedback = document.getElementById(`f${i}`);
+
+        if (correct) {
+          score++;
+          feedback.textContent = "✓ Correto!";
+          feedback.className = "feedback correct";
+        } else {
+          feedback.textContent = userAnswer.trim()
+            ? `✗ Incorreto. Resposta esperada: ${answers[key]}`
+            : `✗ Não respondida. Resposta esperada: ${answers[key]}`;
+          feedback.className = "feedback wrong";
+        }
+      }
+
+      document.getElementById("score").textContent = `${score}/8`;
+      document.getElementById("message").textContent =
+        score === 8
+          ? "Excelente! Você dominou os conceitos desta aula."
+          : score >= 6
+            ? "Muito bom! Revise os pontos que errou."
+            : "Vale revisar a aula e tentar novamente.";
+
+      result.style.display = "block";
+      result.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      quiz.reset();
+
+      for (let i = 1; i <= 8; i++) {
+        const feedback = document.getElementById(`f${i}`);
+        feedback.textContent = "";
+        feedback.className = "feedback";
+      }
+
+      result.style.display = "none";
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    updateProgress();
+  </script>
+  <script>
+    const sections = document.querySelectorAll(
+      "#inicio, #q1, #q2, #q3, #q4, #q5, #q6, #q7, #q8, #resultado"
+    );
+    const links = document.querySelectorAll(".nav:not(.next-nav) a");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          links.forEach((link) => link.classList.remove("active"));
+
+          const active = document.querySelector(
+            `.nav:not(.next-nav) a[href="#${entry.target.id}"]`
+          );
+
+          if (active) active.classList.add("active");
+        });
+      },
+      { rootMargin: "-20% 0px -65% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  </script>
+ </body>
+</html>

@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo XV — Aula 03 | package.json e revisão</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+        :root {
+            --bg: #07090d;
+            --panel: #11161f;
+            --border: rgba(255, 255, 255, .09);
+            --text: #f4f7fb;
+            --muted: #a5adba;
+            --muted2: #707988;
+            --accent: #bb58e6;
+            --blue: #37b8ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 80% 0%,
+                    rgba(55, 184, 255, .08),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 15% 40%,
+                    rgba(88, 230, 165, .05),
+                    transparent 25%
+                ),
+                var(--bg);
+            color: var(--text);
+            font-family: Inter, system-ui, sans-serif;
+            line-height: 1.7;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .site {
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 30px 22px;
+            border-right: 1px solid var(--border);
+            background: rgba(7, 9, 13, .78);
+            backdrop-filter: blur(22px);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 42px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(164, 88, 230, 0.851);
+            border-radius: 11px;
+            color: var(--accent);
+            font-family: "Space Grotesk";
+            font-weight: 700;
+            background: rgba(190, 88, 230, 0.08);
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted2);
+            font-size: .67rem;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+        }
+
+        .brand strong {
+            display: block;
+            font-family: "Space Grotesk";
+        }
+
+        .nav-label {
+            margin: 0 10px 12px;
+            color: var(--muted2);
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: grid;
+            gap: 5px;
+        }
+
+        .nav a {
+            position: relative;
+            padding: 11px 13px;
+            border-radius: 11px;
+            color: var(--muted);
+            font-size: .87rem;
+            transition: .2s;
+        }
+
+        .nav a:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            border-radius: 99px;
+            background: var(--accent);
+            opacity: 0;
+            transform: scaleY(.5);
+            transition: .2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255, 255, 255, .055);
+            color: var(--text);
+        }
+
+        .nav a:hover:before,
+        .nav a.active:before {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+
+        .next-lesson-nav {
+            margin-top: 34px;
+            padding-top: 26px;
+            border-top: 1px solid var(--border);
+        }
+
+        .next-nav a,
+        .next-nav a:hover,
+        .next-nav a:focus,
+        .next-nav a:active {
+            background: transparent;
+            color: #626976;
+            opacity: .65;
+        }
+
+        .next-nav a:before,
+        .next-nav a:hover:before,
+        .next-nav a:focus:before,
+        .next-nav a:active:before {
+            display: none;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            left: 22px;
+            right: 22px;
+            bottom: 26px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted2);
+            font-size: .72rem;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 48px 90px;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 570px;
+            margin: 0 -48px 80px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            background: linear-gradient(135deg, #101820, #07090d);
+            isolation: isolate;
+        }
+
+        .hero:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(7, 9, 13, .98),
+                    rgba(7, 9, 13, .38)
+                ),
+                linear-gradient(
+                    0deg,
+                    rgba(7, 9, 13, .9),
+                    transparent 60%
+                );
+            z-index: 1;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            opacity: .13;
+            background-image:
+                linear-gradient(
+                    rgba(171, 88, 230, 0.4) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(161, 88, 230, 0.4) 1px,
+                    transparent 1px
+                );
+            background-size: 42px 42px;
+            mask-image: linear-gradient(90deg, black, transparent);
+        }
+
+
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 80px 48px 72px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 7px 11px;
+            border: 1px solid rgba(161, 88, 230, 0.736);
+            border-radius: 999px;
+            color: var(--accent);
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow:before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 14px var(--accent);
+        }
+
+        h1 {
+            font-family: "Space Grotesk";
+            font-size: clamp(3rem, 7vw, 5.8rem);
+            line-height: .96;
+            letter-spacing: -.055em;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin-top: 22px;
+            color: #c6ccd6;
+            font-size: 1.06rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 28px;
+        }
+
+        .meta {
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 9px;
+            background: rgba(0, 0, 0, .28);
+            font-size: .75rem;
+        }
+
+        .content {
+            max-width: 880px;
+        }
+
+        section {
+            scroll-margin-top: 40px;
+            margin-bottom: 88px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .section-number {
+            color: var(--accent);
+            font-family: "Space Grotesk";
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+        }
+
+        h2 {
+            font-family: "Space Grotesk";
+            font-size: clamp(1.9rem, 4vw, 2.65rem);
+            line-height: 1.15;
+            letter-spacing: -.04em;
+        }
+
+        h3 {
+            margin: 34px 0 12px;
+            font-size: 1.1rem;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--muted);
+        }
+
+        .code-block {
+            margin: 22px 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #05070a;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, .25);
+        }
+
+        .code-top {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 11px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            background: #0b0e13;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #424955;
+        }
+
+        .code-top span {
+            margin-left: 7px;
+            color: #736880;
+            font: .68rem "Space Grotesk";
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            color: #dce3ed;
+            font: 500 .88rem/1.7 "Cascadia Code", "Fira Code", Consolas, monospace;
+        }
+
+        .key {
+            color: #8c7fff;
+        }
+
+        .string {
+            color: #b056dd;
+        }
+
+        .tag {
+            color: #d5a9ff;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 30px 0;
+        }
+
+        .card {
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: rgba(255, 255, 255, .035);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-family: "Space Grotesk";
+        }
+
+        .card p {
+            margin: 0;
+            font-size: .87rem;
+        }
+
+        .image-placeholder {
+            position: relative;
+            min-height: 300px;
+            margin: 34px 0;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            border: 1px dashed rgba(255, 255, 255, .2);
+            border-radius: 20px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(187, 88, 230, 0.055),
+                    rgba(55, 184, 255, .035)
+                ),
+                #0b0e13;
+        }
+
+        .image-placeholder:before {
+            content: "";
+            position: absolute;
+            inset: 18px;
+            border: 1px solid rgba(255, 255, 255, .045);
+            border-radius: 15px;
+        }
+
+        .placeholder {
+            text-align: center;
+            position: relative;
+            padding: 30px;
+        }
+
+        .placeholder-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 13px;
+            border: 1px solid rgba(147, 88, 230, 0.25);
+            border-radius: 13px;
+            color: var(--accent);
+            font-family: "Space Grotesk";
+            font-weight: 700;
+        }
+
+        .placeholder strong {
+            display: block;
+            font-family: "Space Grotesk";
+            font-size: 1.15rem;
+        }
+
+        .placeholder span {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted2);
+            font-size: .8rem;
+        }
+
+        .info {
+            margin: 28px 0;
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, .045),
+                    rgba(255, 255, 255, .018)
+                );
+        }
+
+        .info strong {
+            display: block;
+            margin-bottom: 9px;
+            font-family: "Space Grotesk";
+        }
+
+        .info p:last-child {
+            margin: 0;
+        }
+
+        .flow-card {
+            margin-top: 30px;
+            padding: 34px 24px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(169, 88, 230, 0.08),
+                    transparent 45%
+                ),
+                #080b10;
+        }
+
+        .flow {
+            min-width: 650px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .node {
+            min-width: 180px;
+            padding: 12px 24px;
+            border: 1px solid rgba(159, 88, 230, 0.25);
+            border-radius: 11px;
+            background: rgba(88, 230, 165, .055);
+            text-align: center;
+            font-family: "Space Grotesk";
+            font-weight: 600;
+        }
+
+        .node.main {
+            border-color: rgba(202, 55, 255, 0.3);
+            background: rgba(155, 55, 255, 0.06);
+        }
+
+        .arrow {
+            height: 35px;
+            display: flex;
+            align-items: center;
+            color: var(--accent);
+        }
+
+        .branches {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+        }
+
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .quote {
+            margin-top: 28px;
+            padding: 25px 28px;
+            border-left: 2px solid var(--accent);
+            background: rgba(150, 88, 230, 0.045);
+            border-radius: 0 13px 13px 0;
+        }
+
+        .quote p {
+            margin: 0;
+            color: #d8dde5;
+        }
+
+        .lesson-navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 70px;
+            padding-top: 26px;
+            border-top: 1px solid var(--border);
+        }
+
+        .lesson-navigation a {
+            padding: 12px 17px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: rgba(255, 255, 255, .025);
+            color: var(--muted);
+            font-size: .83rem;
+        }
+
+        .lesson-navigation a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .site-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 80px;
+            padding: 28px 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted2);
+            font-size: .72rem;
+            letter-spacing: .03em;
+            text-align: center;
+        }
+
+        .footer-brand img {
+            display: block;
+            width: 70px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* ===== Decoração visual com as imagens da aula ===== */
+        .hero-photo {
+            position: absolute;
+            left: 23%;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 26px;
+            box-shadow: 0 35px 100px rgba(0,0,0,.55);
+            opacity: .72;
+            z-index: 0;
+            isolation: isolate;
+        }
+
+        .hero-photo::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(7,9,13,.55), transparent 55%),
+                linear-gradient(0deg, rgba(7,9,13,.55), transparent 45%);
+            z-index: 1;
+        }
+
+        .hero-photo img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+
+
+        .image-placeholder.has-image {
+            min-height: 430px;
+            display: block;
+            border-style: solid;
+            position: relative;
+        }
+
+        .image-placeholder.has-image img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: .68;
+            filter: saturate(.78) contrast(1.06);
+        }
+
+        .image-placeholder.has-image::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7,9,13,.05), rgba(7,9,13,.82));
+        }
+
+        .image-placeholder.has-image .placeholder {
+            position: absolute;
+            inset: auto 0 0;
+            z-index: 2;
+            text-align: left;
+            padding: 28px;
+        }
+
+        .image-placeholder.has-image .placeholder-icon {
+            margin: 0 0 10px;
+        }
+
+        @media (max-width: 900px) {
+            .hero-photo {
+                right: -8%;
+                width: 62%;
+                height: 72%;
+                opacity: .45;
+            }
+
+            .visual-strip {
+                grid-template-columns: 1fr 1fr;
+                margin-top: -20px;
+            }
+
+            .visual-card:first-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .hero-photo {
+                right: -30%;
+                width: 95%;
+                opacity: .28;
+            }
+
+            .visual-strip {
+                grid-template-columns: 1fr;
+                margin-bottom: 65px;
+            }
+
+            .visual-card,
+            .visual-card:nth-child(2),
+            .visual-card:nth-child(3) {
+                height: 190px;
+                transform: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .site {
+                display: block;
+            }
+
+            .sidebar {
+                position: relative;
+                height: auto;
+                padding: 18px 20px;
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand {
+                margin-bottom: 18px;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .nav {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            main {
+                padding: 0 24px 70px;
+            }
+
+            .hero {
+                min-height: 540px;
+                margin: 0 -24px 65px;
+            }
+
+            .hero-content {
+                padding: 60px 24px;
+            }
+
+            .hero-code {
+                right: -10%;
+                width: 58%;
+                opacity: .5;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-code {
+                width: 90%;
+                right: -35%;
+                opacity: .28;
+            }
+
+            .hero {
+                min-height: 570px;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .branches {
+                gap: 35px;
+            }
+
+            .lesson-navigation {
+                flex-direction: column;
+            }
+
+            .lesson-navigation a {
+                text-align: center;
+            }
+
+            .site-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="site">
+
+        <aside class="sidebar">
+
+            <a class="brand" href="index.html">
+                <span class="brand-mark">JS</span>
+
+                <span>
+                    <small>Módulo XV</small>
+                    <strong>Node.js · Sass</strong>
+                </span>
+            </a>
+
+            <div class="nav-label">Nesta aula</div>
+
+            <nav class="nav" aria-label="Navegação da aula">
+                <a class="active" href="#package-json">
+                    07 · package.json
+                </a>
+
+                <a href="#relacao">
+                    08 · Node.js, npm e Sass
+                </a>
+
+                <a href="#revisao">
+                    09 · O que você deve saber
+                </a>
+            </nav>
+
+            <div class="next-lesson-nav">
+
+                <div class="nav-label">
+                    Aulas anteriores
+                </div>
+
+                <nav class="nav next-nav" aria-label="Aulas anteriores">
+                    <a href="index.html">
+                        · Node.js
+                    </a>
+
+                    <a href="index2.html">
+                        · Sass
+                    </a>
+                </nav>
+
+            </div>
+
+            <div class="sidebar-footer">
+                Aula 03 · package.json e revisão
+            </div>
+
+        </aside>
+
+        <main>
+
+            <header class="hero">
+
+                <div class="hero-grid"></div>
+
+                <div class="hero-photo" aria-hidden="true">
+                    <img src="images/jellyfish.png" alt="">
+                </div>
+
+
+
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+                        Aula 03 · Ecossistema Node
+                    </div>
+
+                    <h1>
+                        package.json<br>
+                        e revisão
+                    </h1>
+
+                    <p>
+                        Entenda o papel do package.json e como Node.js,
+                        npm e Sass se relacionam dentro de um projeto.
+                    </p>
+
+                    <div class="hero-meta">
+                        <span class="meta">package.json</span>
+                        <span class="meta">Node.js</span>
+                        <span class="meta">npm</span>
+                        <span class="meta">Sass</span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+
+            <div class="content">
+
+                <section id="package-json">
+
+                    <div class="section-heading">
+                        <span class="section-number">07</span>
+                        <h2>
+                            O papel do <code>package.json</code>
+                        </h2>
+                    </div>
+
+                    <p>
+                        Quando trabalhamos com projetos Node/npm,
+                        um arquivo muito importante é o:
+                    </p>
+
+                    <div class="code-block">
+
+                        <div class="code-top">
+                            <i class="dot"></i>
+                            <i class="dot"></i>
+                            <i class="dot"></i>
+                            <span>arquivo do projeto</span>
+                        </div>
+
+                        <pre><code>package.json</code></pre>
+
+                    </div>
+
+                    <p>
+                        Ele funciona como uma espécie de descrição
+                        do projeto e pode registrar informações como:
+                    </p>
+
+                    <div class="cards">
+
+                        <article class="card">
+                            <h3>Nome do projeto</h3>
+                            <p>
+                                Identificação do projeto.
+                            </p>
+                        </article>
+
+                        <article class="card">
+                            <h3>Versão</h3>
+                            <p>
+                                Versão atual do projeto.
+                            </p>
+                        </article>
+
+                        <article class="card">
+                            <h3>Scripts</h3>
+                            <p>
+                                Comandos utilizados no projeto.
+                            </p>
+                        </article>
+
+                        <article class="card">
+                            <h3>Dependências</h3>
+                            <p>
+                                Pacotes necessários para o projeto.
+                            </p>
+                        </article>
+
+                        <article class="card">
+                            <h3>Dependências de desenvolvimento</h3>
+                            <p>
+                                Ferramentas necessárias durante o desenvolvimento.
+                            </p>
+                        </article>
+
+                    </div>
+
+                    <div class="image-placeholder has-image">
+                        <img src="images/rain-city.jpg" alt="Cidade chuvosa à noite com dupla exposição" loading="lazy">
+                        <div class="placeholder">
+                            <div class="placeholder-icon">VIS</div>
+                            <strong>O projeto também é uma experiência visual</strong>
+                            <span>Imagem decorativa para quebrar o bloco de código e criar ritmo na leitura.</span>
+                        </div>
+                    </div>
+
+                    <h3>Exemplo</h3>
+
+                    <div class="code-block">
+
+                        <div class="code-top">
+                            <i class="dot"></i>
+                            <i class="dot"></i>
+                            <i class="dot"></i>
+                            <span>package.json</span>
+                        </div>
+
+                        <pre><code>{
+  <span class="key">"name"</span>: <span class="string">"meu-projeto"</span>,
+  <span class="key">"devDependencies"</span>: {
+    <span class="key">"sass"</span>: <span class="string">"^1.0.0"</span>
+  }
+}</code></pre>
+
+                    </div>
+
+                    <div class="info">
+
+                        <strong>
+                            Por que isso é importante?
+                        </strong>
+
+                        <p>
+                            A ideia é que o projeto saiba quais pacotes
+                            precisa para funcionar ou ser desenvolvido.
+                        </p>
+
+                        <p>
+                            Isso é especialmente importante quando
+                            trabalhamos em equipe ou quando precisamos
+                            reinstalar um projeto depois de formatar o computador.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <section id="relacao">
+
+                    <div class="section-heading">
+                        <span class="section-number">08</span>
+                        <h2>
+                            Relação entre Node.js, npm e Sass
+                        </h2>
+                    </div>
+
+                    <p>
+                        Podemos resumir toda a aula desta maneira:
+                    </p>
+
+                    <div class="image-placeholder has-image">
+                        <img src="images/eye-city.jpg" alt="Olho com paisagem urbana em dupla exposição" loading="lazy">
+                        <div class="placeholder">
+                            <div class="placeholder-icon">FLOW</div>
+                            <strong>Um ecossistema conectado</strong>
+                            <span>Node.js, npm e Sass funcionam como partes de um mesmo fluxo de desenvolvimento.</span>
+                        </div>
+                    </div>
+
+                    <div class="flow-card">
+
+                        <div class="flow">
+
+                            <div class="node main">
+                                NODE.JS
+                            </div>
+
+                            <div class="arrow">
+                                ↓
+                            </div>
+
+                            <div class="node">
+                                npm
+                            </div>
+
+                            <div class="arrow">
+                                ↓
+                            </div>
+
+                            <div class="branches">
+
+                                <div class="branch">
+
+                                    <div class="node">
+                                        instalar
+                                    </div>
+
+                                    <div class="arrow">
+                                        ↓
+                                    </div>
+
+                                    <div class="node">
+                                        pacotes
+                                    </div>
+
+                                </div>
+
+                                <div class="branch">
+
+                                    <div class="node">
+                                        gerenciar
+                                    </div>
+
+                                    <div class="arrow">
+                                        ↓
+                                    </div>
+
+                                    <div class="node">
+                                        pacotes
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="arrow">
+                                ↓
+                            </div>
+
+                            <div class="node main">
+                                Sass
+                            </div>
+
+                            <div class="arrow">
+                                ↓
+                            </div>
+
+                            <div class="node">
+                                .scss
+                            </div>
+
+                            <div class="arrow">
+                                ↓
+                            </div>
+
+                            <div class="node">
+                                compilação
+                            </div>
+
+                            <div class="arrow">
+                                ↓
+                            </div>
+
+                            <div class="node">
+                                .css
+                            </div>
+
+                            <div class="arrow">
+                                ↓
+                            </div>
+
+                            <div class="node main">
+                                navegador
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="quote">
+
+                        <p>
+                            O ponto principal é entender que
+                            <strong>Node.js fornece o ambiente</strong>,
+                            enquanto
+                            <strong>npm permite instalar e gerenciar pacotes</strong>,
+                            como o <strong>Sass</strong>.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <section id="revisao">
+
+                    <div class="section-heading">
+                        <span class="section-number">09</span>
+
+                        <h2>
+                            O que você deve saber ao terminar esta aula
+                        </h2>
+                    </div>
+
+                    <p>
+                        Ao final desta primeira aula,
+                        você deve conseguir explicar:
+                    </p>
+
+                    <div class="cards">
+
+                        <article class="card">
+                            <h3>Node.js</h3>
+                            <p>
+                                É um ambiente que permite executar
+                                JavaScript fora do navegador.
+                            </p>
+                        </article>
+
+                        <article class="card">
+                            <h3>npm</h3>
+                            <p>
+                                É o gerenciador de pacotes utilizado
+                                no ecossistema Node.js.
+                            </p>
+                        </article>
+
+                        <article class="card">
+                            <h3>Pacote</h3>
+                            <p>
+                                É um conjunto de código que pode ser
+                                instalado e utilizado em um projeto.
+                            </p>
+                        </article>
+
+                        <article class="card">
+                            <h3>Sass</h3>
+                            <p>
+                                É uma ferramenta que amplia as possibilidades
+                                do CSS e que pode ser instalada através do npm.
+                            </p>
+                        </article>
+
+                    </div>
+
+                    <h3>Fluxo básico</h3>
+
+                    <div class="code-block">
+
+                        <div class="code-top">
+                            <i class="dot"></i>
+                            <i class="dot"></i>
+                            <i class="dot"></i>
+                            <span>fluxo</span>
+                        </div>
+
+                        <pre><code>Node.js
+                                 ↓
+                              npm
+                                 ↓
+                              Sass
+                                 ↓
+                              SCSS
+                                 ↓
+                              CSS
+                                 ↓
+                              Navegador
+                        </code></pre>
+
+                    </div>
+
+                    <div class="image-placeholder has-image">
+                        <img src="images/gold.png" alt="Pessoa fazendo um gesto com a mão em perspectiva" loading="lazy">
+                        <div class="placeholder">
+                            <div class="placeholder-icon">END</div>
+                            <strong>Resumo visual da aula</strong>
+                            <span>Node.js → npm → Sass → SCSS → CSS → navegador.</span>
+                        </div>
+                    </div>
+
+                </section>
+
+                <nav class="lesson-navigation" aria-label="Navegação entre aulas">
+
+                    <a href="index2.html">
+                        ← Aula anterior · Sass
+                    </a>
+
+                    <a href="index3.html">
+                        Próxima aula →
+                    </a>
+
+                </nav>
+
+                <footer class="site-footer">
+
+                    <div class="footer-brand">
+                        <img src="images/logo.png" alt="Marcos Gomes">
+                    </div>
+
+                    <div>
+                        © 2026 Marcos Gomes | All Rights Reserved
+                    </div>
+
+                </footer>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('section[id]');
+
+        const links = document.querySelectorAll(
+            '.nav:not(.next-nav) a'
+        );
+
+        const observer = new IntersectionObserver(
+            entries => {
+                entries.forEach(entry => {
+
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+                    links.forEach(link => {
+                        link.classList.remove('active');
+                    });
+
+                    const active = document.querySelector(
+                        '.nav a[href="#' + entry.target.id + '"]'
+                    );
+
+                    if (active) {
+                        active.classList.add('active');
+                    }
+
+                });
+            },
+            {
+                rootMargin: '-20% 0px -65% 0px'
+            }
+        );
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+
+</body>
+
+</html>

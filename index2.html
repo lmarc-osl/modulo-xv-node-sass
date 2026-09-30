@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Módulo XV — Aula 02: Conhecendo o Sass, instalação e dependências locais e globais.">
+    <title>Módulo XV — Aula 02 | Conhecendo o Sass</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+        :root {
+            --bg: #090909;
+            --bg-soft: #111;
+            --panel: rgba(255,255,255,.045);
+            --border: rgba(255,255,255,.10);
+            --text: #f7f7f5;
+            --muted: #aaa9a5;
+            --muted-2: #6e6d69;
+            --accent: #ff4d25;
+            --accent-soft: rgba(255,77,37,.13);
+            --blue: #63b6c7;
+            --shadow: 0 25px 80px rgba(0,0,0,.42);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 85% 5%, rgba(255,77,37,.08), transparent 27%),
+                radial-gradient(circle at 15% 45%, rgba(99,182,199,.05), transparent 25%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Inter", system-ui, sans-serif;
+            line-height: 1.7;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+            z-index: 20;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .site {
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 30px 22px;
+            border-right: 1px solid var(--border);
+            background: rgba(9,9,9,.76);
+            backdrop-filter: blur(22px);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 42px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255,77,37,.38);
+            border-radius: 11px;
+            background: linear-gradient(135deg, rgba(255,77,37,.20), rgba(255,255,255,.04));
+            color: var(--accent);
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 800;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted-2);
+            font-size: .67rem;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+        }
+
+        .brand strong {
+            display: block;
+            margin-top: 1px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .98rem;
+        }
+
+
+        .nav-label {
+            margin: 0 10px 12px;
+            color: var(--muted-2);
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+
+
+        .next-lesson-nav {
+            margin-top: 34px;
+            padding-top: 26px;
+            border-top: 1px solid var(--border);
+        }
+
+        .next-nav a {
+            color: #626976;
+            opacity: .65;
+            font-size: .82rem;
+        }
+
+        /* Remove completamente os efeitos da navegação principal */
+
+        .next-nav a::before {
+            display: none;
+        }
+
+
+
+
+        .nav {
+            display: grid;
+            gap: 5px;
+        }
+
+        .nav a {
+            position: relative;
+            padding: 11px 13px;
+            border-radius: 11px;
+            color: var(--muted);
+            font-size: .87rem;
+            transition: .2s ease;
+        }
+
+        .nav a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            border-radius: 99px;
+            background: var(--accent);
+            opacity: 0;
+            transform: scaleY(.5);
+            transition: .2s ease;
+        }
+
+        .nav:not(.next-nav) a:hover,
+        .nav:not(.next-nav) a.active {
+            background: rgba(255,255,255,.055);
+            color: var(--text);
+        }
+
+        .nav:not(.next-nav) a:hover::before,
+        .nav:not(.next-nav) a.active::before {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            left: 22px;
+            right: 22px;
+            bottom: 26px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted-2);
+            font-size: .72rem;
+        }
+
+        /* MAIN */
+
+        main {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 48px 90px;
+        }
+
+        /* HERO */
+
+        .hero {
+            position: relative;
+            min-height: 620px;
+            margin: 0 -48px 82px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            isolation: isolate;
+            background: #b7351d;
+        }
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 38%;
+            filter: saturate(.92) contrast(1.04);
+            z-index: 0;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(0,0,0,.84) 0%, rgba(0,0,0,.34) 50%, rgba(0,0,0,.06) 100%),
+                linear-gradient(0deg, rgba(0,0,0,.84), transparent 58%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 80px 48px 72px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 7px 11px;
+            border: 1px solid rgba(255,255,255,.22);
+            border-radius: 999px;
+            background: rgba(0,0,0,.25);
+            color: #fff;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 14px var(--accent);
+        }
+
+        h1 {
+            max-width: 750px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(3.2rem, 7vw, 6.2rem);
+            line-height: .94;
+            letter-spacing: -.06em;
+        }
+
+        .hero p {
+            max-width: 620px;
+            margin-top: 23px;
+            color: #eee;
+            font-size: 1.05rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 27px;
+        }
+
+        .meta {
+            padding: 8px 12px;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 9px;
+            background: rgba(0,0,0,.22);
+            color: #fff;
+            font-size: .75rem;
+            backdrop-filter: blur(8px);
+        }
+
+        /* CONTENT */
+
+        .content { max-width: 880px; }
+
+        section {
+            scroll-margin-top: 40px;
+            margin-bottom: 88px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .section-number {
+            color: var(--accent);
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+        }
+
+        h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.9rem, 4vw, 2.65rem);
+            line-height: 1.15;
+            letter-spacing: -.04em;
+        }
+
+        h3 {
+            margin: 34px 0 12px;
+            font-size: 1.1rem;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--muted);
+        }
+
+        /* EDITORIAL IMAGE */
+
+        .editorial {
+            position: relative;
+            min-height: 420px;
+            margin: 34px 0;
+            overflow: hidden;
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .editorial img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .editorial::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.08)),
+                linear-gradient(0deg, rgba(0,0,0,.7), transparent 55%);
+        }
+
+        .editorial-content {
+            position: relative;
+            z-index: 1;
+            min-height: 420px;
+            max-width: 530px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 34px;
+        }
+
+        .editorial-content small {
+            color: #ffb29e;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        .editorial-content strong {
+            margin-top: 8px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 2rem;
+            line-height: 1.06;
+        }
+
+        .editorial-content p {
+            margin: 9px 0 0;
+            color: #d1d1cd;
+            font-size: .9rem;
+        }
+
+        /* RESOURCE CARDS */
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 30px 0;
+        }
+
+        .resource {
+            padding: 23px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.018));
+        }
+
+        .resource-icon {
+            width: 35px;
+            height: 35px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 14px;
+            border-radius: 10px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+        }
+
+        .resource strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .resource p {
+            margin: 0;
+            font-size: .86rem;
+        }
+
+        /* CODE */
+
+        .code-block {
+            margin: 22px 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #050505;
+            box-shadow: 0 16px 45px rgba(0,0,0,.28);
+        }
+
+        .code-top {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 11px 14px;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            background: #0d0d0d;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #454545;
+        }
+
+        .code-top span {
+            margin-left: 7px;
+            color: #6e6e6e;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .68rem;
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            color: #e4e4e0;
+            font: 500 .9rem/1.7 "Cascadia Code", "Fira Code", Consolas, monospace;
+        }
+
+        .command { color: #ff815f; }
+        .flag { color: #ffbf72; }
+        .output { color: #82d1dc; }
+
+        /* PROCESS */
+
+        .process {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            margin: 30px 0;
+        }
+
+        .process-step {
+            position: relative;
+            min-height: 155px;
+            padding: 24px 20px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.025);
+        }
+
+        .process-step:first-child { border-radius: 17px 0 0 17px; }
+        .process-step:last-child { border-radius: 0 17px 17px 0; }
+
+        .process-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -11px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 22px;
+            height: 22px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: #151515;
+            color: var(--accent);
+            font-size: .75rem;
+        }
+
+        .step-number {
+            color: var(--accent);
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+        }
+
+        .process-step strong {
+            display: block;
+            margin-top: 8px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.05rem;
+        }
+
+        .process-step span {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        /* INSTALL COMPARISON */
+
+        .install-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .install-card {
+            padding: 26px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--panel);
+        }
+
+        .install-card.featured {
+            border-color: rgba(255,77,37,.28);
+            background:
+                linear-gradient(145deg, rgba(255,77,37,.09), rgba(255,255,255,.025));
+        }
+
+        .install-card small {
+            color: var(--muted-2);
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .install-card h3 {
+            margin: 7px 0 10px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.45rem;
+        }
+
+        .install-card p { margin-bottom: 15px; }
+
+        .install-card img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            border-radius: 13px;
+            margin-top: 10px;
+            filter: saturate(.82);
+        }
+
+        /* FINAL */
+
+        .final-image {
+            position:relative;
+            min-height: 540px;
+            overflow: hidden;
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .final-image img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 25%;
+        }
+
+        .final-image::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,.88), rgba(0,0,0,.18));
+        }
+
+        .final-content {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            min-height: 340px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 34px;
+        }
+
+        .final-content small {
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .final-content h2 { margin-top: 8px; }
+
+        /* FOOTER NAV */
+
+        .lesson-navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 70px;
+            padding-top: 26px;
+            border-top: 1px solid var(--border);
+        }
+
+        .lesson-navigation a {
+            padding: 12px 17px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: rgba(255,255,255,.025);
+            color: var(--muted);
+            font-size: .83rem;
+            transition: .2s ease;
+        }
+
+        .lesson-navigation a:hover {
+            color: var(--text);
+            background: rgba(255,255,255,.06);
+        }
+
+        .site-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+
+            margin-top: 80px;
+            padding: 28px 20px;
+
+            border-top: 1px solid var(--border);
+
+            color: var(--muted-2);
+            font-family: "Inter", sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.03em;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-brand img {
+            display: block;
+            width: 70px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .footer-copyright {
+            white-space: nowrap;
+        }
+
+
+        @media (max-width: 900px) {
+            .site { display: block; }
+
+            .sidebar {
+                position: relative;
+                height: auto;
+                padding: 18px 20px;
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand { margin-bottom: 18px; }
+            .sidebar-footer { display: none; }
+
+            .nav {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            main { padding: 0 24px 70px; }
+
+            .hero {
+                min-height: 560px;
+                margin: 0 -24px 65px;
+            }
+
+            .hero-content { padding: 60px 24px; }
+        }
+
+        @media (max-width: 650px) {
+            .resource-grid,
+            .install-grid,
+            .process {
+                grid-template-columns: 1fr;
+            }
+
+            .process-step,
+            .process-step:first-child,
+            .process-step:last-child {
+                border-radius: 0;
+            }
+
+            .process-step:first-child { border-radius: 17px 17px 0 0; }
+            .process-step:last-child { border-radius: 0 0 17px 17px; }
+
+            .process-step:not(:last-child)::after {
+                right: 50%;
+                top: auto;
+                bottom: -11px;
+                transform: translateX(50%);
+            }
+
+            h1 { font-size: 3rem; }
+
+            .hero-image { object-position: 55% center; }
+
+            .editorial,
+            .editorial-content,
+            .final-image,
+            .final-content {
+                min-height: 360px;
+            }
+
+            .lesson-navigation {
+                flex-direction: column;
+            }
+
+            .lesson-navigation a { text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="site">
+
+    <aside class="sidebar">
+        <a class="brand" href="index.html">
+            <span class="brand-mark">S</span>
+            <span>
+                <small>Módulo XV</small>
+                <strong>Conhecendo o Sass</strong>
+            </span>
+        </a>
+
+        <div class="nav-label">Nesta aula</div>
+
+        <nav class="nav" aria-label="Navegação da aula">
+            <a class="active" href="#sass">04 · Conhecendo o Sass</a>
+            <a href="#instalacao">05 · Instalando o Sass</a>
+            <a href="#dependencias">06 · Instalação local x global</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            Aula 02 · Sass e dependências
+        </div>
+
+        <div class="next-lesson-nav">
+
+            <div class="nav-label">
+                Próxima aula
+            </div>
+
+            <nav class="nav next-nav" aria-label="Próxima aula">
+
+                <a>07 · package.json</a>
+
+                <a>08 · Node.js, npm e Sass</a>
+
+                <a>09 · O que você deve saber</a>
+
+            </nav>
+
+        </div>
+
+    </aside>
+
+    <main>
+
+        <header class="hero">
+            <img class="hero-image" src="images/sass-red-editorial.jpg"
+                 alt="Pessoa usando óculos vermelhos diante de um fundo vermelho">
+
+            <div class="hero-content">
+                <div class="eyebrow">Aula 02 · Pré-processadores</div>
+
+                <h1>Conhecendo<br>o Sass</h1>
+
+                <p>
+                    Variáveis, organização de estilos, compilação e
+                    instalação do Sass através do npm.
+                </p>
+
+                <div class="hero-meta">
+                    <span class="meta">Sass</span>
+                    <span class="meta">SCSS</span>
+                    <span class="meta">CSS</span>
+                    <span class="meta">npm</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <section id="sass">
+
+                <div class="section-heading">
+                    <span class="section-number">04</span>
+                    <h2>Conhecendo o Sass</h2>
+                </div>
+
+                <p>
+                    O Sass é uma extensão do CSS que adiciona recursos
+                    ao desenvolvimento de folhas de estilo.
+                </p>
+
+                <p>
+                    Ele permite escrever CSS utilizando recursos que tornam
+                    a organização e manutenção dos estilos mais conveniente.
+                </p>
+
+                <div class="editorial">
+                    <img src="images/sass-calm.jpg"
+                         alt="Pessoa diante do mar, representando uma abordagem mais organizada e tranquila">
+
+                    <div class="editorial-content">
+                        <small>Organização de estilos</small>
+                        <strong>Mais recursos para escrever e manter CSS.</strong>
+                        <p>
+                            O Sass adiciona ferramentas que ajudam a estruturar
+                            melhor as folhas de estilo durante o desenvolvimento.
+                        </p>
+                    </div>
+                </div>
+
+                <p>Entre os recursos associados ao Sass estão:</p>
+
+                <div class="resource-grid">
+
+                    <article class="resource">
+                        <div class="resource-icon">$</div>
+                        <strong>Variáveis</strong>
+                        <p>Armazenamento de valores reutilizáveis nos estilos.</p>
+                    </article>
+
+                    <article class="resource">
+                        <div class="resource-icon">{ }</div>
+                        <strong>Aninhamento</strong>
+                        <p>Organização de seletores de maneira hierárquica.</p>
+                    </article>
+
+                    <article class="resource">
+                        <div class="resource-icon">M</div>
+                        <strong>Mixins</strong>
+                        <p>Recursos para reutilizar conjuntos de estilos.</p>
+                    </article>
+
+                    <article class="resource">
+                        <div class="resource-icon">ƒ</div>
+                        <strong>Funções</strong>
+                        <p>Recursos para trabalhar com valores e operações.</p>
+                    </article>
+
+                    <article class="resource">
+                        <div class="resource-icon">+</div>
+                        <strong>Arquivos</strong>
+                        <p>Organização do código em diferentes arquivos.</p>
+                    </article>
+
+                </div>
+
+                <h3>Exemplo simples de variável</h3>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>style.scss</span>
+                    </div>
+
+                    <pre><code><span class="command">$cor-principal</span>: #3498db;
+
+body {
+    background-color: <span class="command">$cor-principal</span>;
+}</code></pre>
+                </div>
+
+                <p>
+                    No CSS tradicional, não escreveríamos dessa maneira.
+                </p>
+
+                <p>
+                    O Sass precisa ser processado/compilado para CSS antes
+                    de ser utilizado pelo navegador.
+                </p>
+
+                <div class="process">
+
+                    <div class="process-step">
+                        <span class="step-number">01</span>
+                        <strong>arquivo .scss</strong>
+                        <span>Você escreve os estilos utilizando Sass.</span>
+                    </div>
+
+                    <div class="process-step">
+                        <span class="step-number">02</span>
+                        <strong>Sass</strong>
+                        <span>O código é processado e convertido.</span>
+                    </div>
+
+                    <div class="process-step">
+                        <span class="step-number">03</span>
+                        <strong>arquivo .css</strong>
+                        <span>O navegador recebe CSS.</span>
+                    </div>
+
+                </div>
+
+                <p>
+                    O navegador trabalha diretamente com CSS. O Sass funciona
+                    como uma ferramenta que nos ajuda durante o desenvolvimento.
+                </p>
+
+            </section>
+
+            <section id="instalacao">
+
+                <div class="section-heading">
+                    <span class="section-number">05</span>
+                    <h2>Instalando o Sass</h2>
+                </div>
+
+                <p>
+                    Como o Sass pode ser instalado através do npm, primeiro
+                    precisamos ter o Node.js instalado.
+                </p>
+
+                <p>
+                    Com o Node funcionando, podemos instalar o pacote Sass.
+                </p>
+
+                <div class="editorial">
+                    <img src="images/sass-fashion.jpg"
+                         alt="Pessoa usando acessórios e roupas em uma composição editorial">
+
+                    <div class="editorial-content">
+                        <small>Node.js → npm → Sass</small>
+                        <strong>O Sass faz parte do ecossistema de ferramentas JavaScript.</strong>
+                        <p>
+                            A instalação pelo npm conecta o Sass ao ambiente
+                            de desenvolvimento baseado em Node.js.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Instalação global</h3>
+
+                <p>
+                    Um comando comum para instalar o Sass globalmente é:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Terminal</span>
+                    </div>
+
+                    <pre><code><span class="command">npm install</span> <span class="flag">-g</span> sass</code></pre>
+                </div>
+
+                <p>
+                    O parâmetro <strong>-g</strong> significa global, ou seja,
+                    o pacote fica disponível para utilização globalmente no sistema.
+                </p>
+
+                <h3>Verificando a instalação</h3>
+
+                <p>
+                    Depois da instalação, podemos verificar o Sass com:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-top">
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <i class="dot"></i>
+                        <span>Terminal</span>
+                    </div>
+
+                    <pre><code><span class="command">sass --version</span></code></pre>
+                </div>
+
+                <p>
+                    Se a instalação estiver correta, o terminal exibirá
+                    a versão do Sass instalada.
+                </p>
+
+            </section>
+
+            <section id="dependencias">
+
+                <div class="section-heading">
+                    <span class="section-number">06</span>
+                    <h2>Instalação local x global</h2>
+                </div>
+
+                <p>
+                    Existe uma diferença importante entre instalar um pacote
+                    globalmente e instalá-lo dentro de um projeto.
+                </p>
+
+                <div class="install-grid">
+
+                    <article class="install-card">
+                        <small>Instalação global</small>
+                        <h3>Disponível no sistema</h3>
+
+                        <p>
+                            O pacote fica disponível globalmente.
+                        </p>
+
+                        <div class="code-block">
+                            <div class="code-top">
+                                <i class="dot"></i>
+                                <i class="dot"></i>
+                                <i class="dot"></i>
+                                <span>Terminal</span>
+                            </div>
+
+                            <pre><code><span class="command">npm install</span> <span class="flag">-g</span> sass</code></pre>
+                        </div>
+
+                    </article>
+
+                    <article class="install-card featured">
+                        <small>Instalação local</small>
+                        <h3>Dependência do projeto</h3>
+
+                        <p>
+                            O Sass é instalado como uma dependência de
+                            desenvolvimento daquele projeto.
+                        </p>
+
+                        <div class="code-block">
+                            <div class="code-top">
+                                <i class="dot"></i>
+                                <i class="dot"></i>
+                                <i class="dot"></i>
+                                <span>Projeto</span>
+                            </div>
+
+                            <pre><code><span class="command">npm install</span> <span class="flag">--save-dev</span> sass</code></pre>
+                        </div>
+
+                    </article>
+
+                </div>
+                <br><br>
+                
+                <div class="final-image">
+                    <img src="images/sass-sea.jpg"
+                         alt="Pessoa diante do mar">
+
+                    <div class="final-content">
+                        <small>Conceito importante</small>
+                        <h2>
+                            A instalação local permite que cada projeto
+                            mantenha suas próprias dependências e versões.
+                        </h2>
+                    </div>
+                </div>
+
+                <p style="margin-top:28px;">
+                    A instalação local é muito comum em projetos modernos
+                    porque permite que cada projeto mantenha suas próprias
+                    dependências e versões.
+                </p>
+
+            </section>
+
+            <nav class="lesson-navigation" aria-label="Navegação entre aulas">
+                <a href="index.html">← Aula anterior · Node.js</a>
+                <a href="index3.html">Próxima aula →</a>
+            </nav>
+
+        </div>
+
+        <footer class="site-footer">
+
+            <div class="footer-brand">
+                <img src="images/logo.png" alt="Marcos Gomes">
+            </div>
+
+            <div class="footer-copyright">
+                © 2026 Marcos Gomes | All Rights Reserved
+            </div>
+
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    const sections = document.querySelectorAll("section[id]");
+    const links = document.querySelectorAll(".nav a");
+
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+
+                links.forEach(link => link.classList.remove("active"));
+
+                const active = document.querySelector(
+                    `.nav a[href="#${entry.target.id}"]`
+                );
+
+                if (active) active.classList.add("active");
+            });
+        },
+        { rootMargin: "-20% 0px -65% 0px" }
+    );
+
+    sections.forEach(section => observer.observe(section));
+</script>
+
+</body>
+</html>
